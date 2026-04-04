@@ -19,6 +19,12 @@ public class OrderService {
     public Order createOrder(Long productId, Integer quantity) {
 
         ProductDTO product = productClient.getProductById(productId);
+
+        // 1. Vérification basique du stock avant création
+        if (product.getStock() < quantity) {
+            throw new RuntimeException("Impossible de commander : stock insuffisant");
+        }
+
         Order order = new Order();
         order.setProductId(productId);
         order.setProductName(product.getName());
@@ -26,6 +32,11 @@ public class OrderService {
         order.setTotalPrice(product.getPrice() * quantity);
         order.setOrderDate(LocalDateTime.now());
         order.setStatus("PENDING");
+
+        Order savedOrder = orderRepository.save(order);
+        // 2. Appel au Product Service pour mettre à jour le stock réel
+        productClient.updateProductStock(productId, quantity);
+
         return orderRepository.save(order);
     }
 }

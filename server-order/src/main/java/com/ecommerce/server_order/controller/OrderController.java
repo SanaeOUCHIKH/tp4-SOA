@@ -3,6 +3,7 @@ package com.ecommerce.server_order.controller;
 import com.ecommerce.server_order.model.Order;
 import com.ecommerce.server_order.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
@@ -13,7 +14,14 @@ public class OrderController {
     @GetMapping public List < Order > getAllOrders() {
         return orderService.getAllOrders();
     }
-    @PostMapping public Order createOrder(@RequestParam Long productId, @RequestParam Integer quantity) {
-        return orderService.createOrder(productId, quantity);
+
+    // exercice 1 etape 14
+    @PostMapping
+    public ResponseEntity<?> createOrder(@RequestParam Long productId, @RequestParam Integer quantity) {
+        try {
+            return ResponseEntity.ok(orderService.createOrder(productId, quantity));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage()); // Retourne "Stock insuffisant !" [cite: 299]
+        }
     }
 }

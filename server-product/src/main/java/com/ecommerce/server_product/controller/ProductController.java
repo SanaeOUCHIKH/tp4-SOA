@@ -24,4 +24,10 @@ public class ProductController {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
+    // pour exercice 1 etape 12
+    @PutMapping("/{id}/stock")
+    public ResponseEntity<Product> updateStock(@PathVariable Long id, @RequestParam Integer quantity) {
+        return ResponseEntity.ok(productService.updateStock(id, quantity));
+    }
 }

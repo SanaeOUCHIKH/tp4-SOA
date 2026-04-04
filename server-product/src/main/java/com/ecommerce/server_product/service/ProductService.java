@@ -13,4 +13,17 @@ public class ProductService {
     public Optional<Product> getProductById(Long id) {         return productRepository.findById(id);     }
     public Product createProduct(Product product) {         return productRepository.save(product);     }
     public void deleteProduct(Long id) {         productRepository.deleteById(id);     }
+
+    // pour exercice 1 etape 12
+    public Product updateStock(Long id, Integer quantity) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produit non trouvé"));
+
+        if (product.getStock() < quantity) {
+            throw new RuntimeException("Stock insuffisant !"); // Étape 14
+        }
+
+        product.setStock(product.getStock() - quantity);
+        return productRepository.save(product);
+    }
 }
