@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "server-product")
+// On lie l'interface à sa classe de secours
+@FeignClient(name = "SERVER-PRODUCT", fallback = ProductFallback.class)
 public interface ProductClient {
-    @GetMapping("/api/products/{id}") ProductDTO getProductById(@PathVariable("id") Long id);
 
-    // pour exercice 1 etape 13
+    @GetMapping("/api/products/{id}")
+    ProductDTO getProductById(@PathVariable("id") Long id);
+
     @PutMapping("/api/products/{id}/stock")
     void updateProductStock(@PathVariable("id") Long id, @RequestParam("quantity") Integer quantity);
 }

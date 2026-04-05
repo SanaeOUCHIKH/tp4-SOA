@@ -20,6 +20,11 @@ public class OrderService {
 
         ProductDTO product = productClient.getProductById(productId);
 
+        // Si le produit est null (n'existe pas dans l'autre service)
+        if (product == null) {
+            throw new RuntimeException("Erreur : Le produit avec l'ID " + productId + " n'existe pas !");
+        }
+
         // 1. Vérification basique du stock avant création
         if (product.getStock() < quantity) {
             throw new RuntimeException("Impossible de commander : stock insuffisant");
@@ -37,6 +42,6 @@ public class OrderService {
         // 2. Appel au Product Service pour mettre à jour le stock réel
         productClient.updateProductStock(productId, quantity);
 
-        return orderRepository.save(order);
+        return savedOrder;
     }
 }
